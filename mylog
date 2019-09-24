@@ -1,0 +1,226 @@
+> (define pi 3.15)
+> pi
+3.15
+> (define (foo a)
+    (substring a 0 3)
+    )
+> (foo "asdrthdrfhbrg")
+"asd"
+> (define (foo a)
+    (substring a 2 3)
+    )
+> (foo "srthdfg")
+"t"
+> (substring "daergdrf" 3 5)
+"rg"
+> (string-append "vas" "a" "lo")
+"vasalo"
+> (string-length "asdge arg")
+9
+> (string? "string?")
+#t
+> (string? 2054)
+#f
+> (sqrt 16)
+4
+> (sqrt -16)
+0+4i
+> (+ 1 2)
+3
+> (+ 1 2 3 4 5 6)
+
+21
+> (+ 1 2  3)
+
+6
+> (- 10 3 2 5 1)
+-1
+> (<= 6 7)
+#t
+> (number? "number")
+#f
+> (number? 6)
+#t
+> (= 6 7)
+#f
+> (equal? 2019 "asd")
+#f
+> (equal? 6 6 )
+#t
+> (= "nem" "megy")
+. . =: contract violation
+  expected: number?
+  given: "nem"
+  argument position: 1st
+  other arguments...:
+ > (if (> 5 1)
+      "igen"
+      "nem"
+   )
+"igen"
+> (if 1 "egy" "nem")
+"egy"
+> (if 0 "egy" "nem")
+"egy"
+> (if -1 "egy" "nem")
+"egy"
+> (if "sad" "egy" "nem")
+"egy"
+> ifnel ha hamis akkor a masodik egyebkent az elso
+> (if #f "igaz" "ha")
+"ha"
+> (define (reply s)
+    (if (equal? "hello" (substring s 0 5) )
+        "hi"
+        "huh?")
+    )
+> (reply "hello world")
+"hi"
+> (reply "haello world")
+"huh?"
+> (reply "hullo world")
+"huh?"
+> (reply "asd")
+. . substring: ending index is out of range
+  ending index: 5
+  starting index: 0
+  valid range: [0, 3]
+  string: "asd"
+> (reply 8)
+. . substring: contract violation
+  expected: string?
+  given: 8
+  argument position: 1st
+  other arguments...:
+> (define (reply s)
+  (if (string? s)
+      (if (>= (string-length s) 5 )
+          (if (equal? "hello" (substring s 0 5) )
+        "hi"
+        "huh?")
+          "error2"
+          )
+      "error1" )
+    )
+> (reply 6)
+"error1"
+> (reply "asd")
+"error2"
+> (and 1 2 #f #t)
+#f
+ha csak 1 is hamis akkor hamis egybkent az utolso?
+> (or 1 2 #f #t)
+1
+> (or #f 1 2 #f #t)
+1
+> (and)
+#t
+> (or)
+#f
+> (define (reply s)
+  (if (and (string? s)
+           (>= (string-length s) 5 )
+           (equal? "hello" (substring s 0 5)))
+      "hi"     
+      "huh?")
+)
+> (reply "asd")
+"huh?"
+#|
+(define (allPositive? a b c)
+  (and (>= a 0)
+           (>= b 0)
+           (>= c 0))
+	#t
+	#f
+  )
+
+(define (hasNegative? a b c)
+  (and (>= a 0)
+           (>= b 0)
+           (>= c 0))
+	#f
+	#t
+  )
+|#
+(define (allPositive? a b c)
+  (and (>= a 0)
+           (>= b 0)
+           (>= c 0))
+  )
+
+(define (hasNegative? a b c)
+  (or (< a 0)
+           (< b 0)
+           (< c 0))
+  )
+
+((lambda (x) x) 42)
+> 42
+((lambda (x) (* x 2)) 42)
+> 84
+((lambda (x y) (+ x y) ) 42 21)
+> 63
+((lambda (x y) (/ (+ x y) 2) ) 42 21)
+> 31 1/2
+
+(define dbl (lambda (x) (* x 2) )
+ )
+
+(define quad (lambda (x) (dbl (dbl x) ) )
+  )
+
+(quad 3)
+> 12
+(define n 10)
+
+(define small? (lambda (num) (<= num n)) )
+(define sqr (lambda (n) (* n n)) )
+
+(small? (sqr 3))
+> #t
+ctrl + \ = λ (lambda)
+
+(require racket/trace)
+
+(define myPow (λ (x y)
+                (if (= 0 y)
+                    1
+                    (* x (myPow x (- y 1)))
+                    )
+                )
+  )
+(trace myPow)
+(myPow 5 2)
+>(myPow 5 2)
+> (myPow 5 1)
+> >(myPow 5 0)
+< <1
+< 5
+<25
+25
+(require racket/trace)
+
+(define myFact (λ (x)
+                (if (= x 0)
+                    1
+                    (* x (myFact (- x 1)))
+                    )
+                )
+  )
+(trace myFact)
+(myFact 5)
+>(myFact 5)
+> (myFact 4)
+> >(myFact 3)
+> > (myFact 2)
+> > >(myFact 1)
+> > > (myFact 0)
+< < < 1
+< < <1
+< < 2
+< <6
+< 24
+<120
+120
+(foo a b) a<=b ...?
