@@ -224,3 +224,54 @@ ctrl + \ = λ (lambda)
 <120
 120
 (foo a b) a<=b ...?
+
+(define (fib n)
+  (if (<= n 2)
+      1
+      (+ (fib (- n 1)) (fib (- n 2)) )
+      )
+  )
+> (fib 2)
+1
+> (fib 3)
+2
+
+(- 4 (+ 1 1))
+      redex (reducible expression)
+continuation: a redex utan miden
+(- 4 [])
+
+farok pozicio:
+expr1 fp.-ban van expr2-vel, ha valahanyszor expr1 egy redex, akkor az o folytatasa azonos az expr2 folytatasaval.
+c[(+ 1 1)] = c[(- 4 [])]
+c[(- 4 [])] = c
+
+c[(if (zero? 0) (+ 1 1) 3)] = c[(if #t (+ 1 1) 3)] = c[(+ 1 1)]
+
+(define f
+  (λ (n prod)
+    (if (= 0 n)
+        prod
+        (f (- n 1) (* n prod))
+        )
+    )
+  )
+
+(let <binds> <body>)
+binds: ( (v1 expr) (v2 expr) ...)
+
+(let ((i 2) (j 3))
+  (+ i j)
+  )
+= 5
+
+(let* ((i 2) (j (+ i 2))) 
+	(+ i j)
+	)
+
+egy (let (...) ... ) kif. ugyanaz mint:
+((lambda (p1 p2 ...) expr1 ...) v1 ... )
+
+ird meg a masodfoku egyenlet megoldo fuggvenyet:
+(quadtratic a b c)
+
