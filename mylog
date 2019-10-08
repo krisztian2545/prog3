@@ -275,3 +275,187 @@ egy (let (...) ... ) kif. ugyanaz mint:
 ird meg a masodfoku egyenlet megoldo fuggvenyet:
 (quadtratic a b c)
 
+odd?
+even?
+(named let)
+letrec
+(do binds (predicate value) body) ahol
+binds = ([p1 i1 u1] [...] ...)
+
+pair
+car
+cdr
+list
+
+(pair? 2)
+(pair? (cons 1 2))
+(pair? '(1 2))
+(displayln " ---- ")
+> (null? (cdr (list 1)))
+#t
+> (cons 1 2)
+'(1 . 2)
+> (cons 1 '())
+'(1)
+> (cons 1 2)
+'(1 . 2)
+> (cons 1 '())
+'(1)
+> (car '(1 2))
+1
+> (car (cons 1 2))
+1
+> (cdr '(1 2))
+'(2)
+> (cdr '(3))
+'()
+> null
+'()
+> (list? (cons 1 (cons 2 '())))
+#t
+> (list? (cons 1 2))
+#f
+> (list (list 1 2) (list 3 4))
+'((1 2) (3 4))
+> (list* 1 2)
+'(1 . 2)
+> (list* 1 2 (list 3 4))
+'(1 2 3 4)
+> (build-list 10 values)
+'(0 1 2 3 4 5 6 7 8 9)
+> (build-list 5 (lambda (x) (* x x)))
+'(0 1 4 9 16)
+> (length (list 1 2 5))
+3
+> (length '())
+0
+> (list-ref (list 2 5 8 4) 3)
+4
+> (list-ref (list 'a 's 'd) 2)
+'d
+> (list-ref (cons 1 2) 1)
+. . list-ref: index reaches a non-pair
+  index: 1
+  in: '(1 . 2)
+> (list-ref (cons 1 2) 0)
+1
+> (list-tail (list 1 4 7 5) 2)
+'(7 5)
+> (list-tail (list 1 4 7 5) 3)
+'(5)
+> (list-tail (list 1 4 7 5) 1)
+'(4 7 5)
+> (list-tail (list 1 4 7 5) 0)
+'(1 4 7 5)
+> (list-tail (cons 1 4) 0)
+'(1 . 4)
+> (list-tail (cons 1 4) 1)
+4
+> (list-tail (cons 1 2) 1)
+2
+> (list-tail (cons 1 2) 2)
+. . list-tail: index reaches a non-pair
+  index: 2
+  in: '(1 . 2)
+  > (list-tail 'not-a-pair 0)
+'not-a-pair
+> (append (list 1 2) (list 3 4))
+'(1 2 3 4)
+> (reverse (list 1 2 3 4))
+'(4 3 2 1)
+
+(define (myrev l)
+  (if (null? l)
+      null
+      (build-list (length l)
+                  (lambda (x) (list-ref l (- (- (length l) x) 1)) )
+                  )
+      )
+       )
+
+(myrev (list 1 2 3))
+(myrev null)
+(myrev '(1 2))
+
+(define (my-reverse lst)
+  (let loop ((lst lst) (new-lst null))
+    (cond
+      [(null? lst) new-lst]
+      [else (loop (cdr lst) (cons (car lst) new-lst) )]
+      )
+    )
+  )
+(my-reverse (list 1 2 3))
+(my-reverse null)
+(my-reverse '(1 2))
+
+(define (myL lst) // hibas
+  (define n 0)
+  (define (ml l n)
+    (cond
+      [(null? l) n]
+      [else (ml (cdr 1) (+ n 1))]
+      )
+    )
+  (ml lst 0)
+  )
+
+(myL (list 1 2 3))
+
+(map proc lst ...+) // lekepezes
+> (map (λ (n) (+ n 1)) '(1 2 3 4))
+'(2 3 4 5)
+> (map (λ (a b) (+ a b)) '(1 2 3 4) '(10 20 30 40))
+'(11 22 33 44)
+(andmap proc list ...+)
+(andmap f (list x y z)) = (and (f x) (f y) (f z))
+(andmap positive? '(2 4 6) )
+#t
+(ormap proc lst ...+)
+-||-
+> (ormap + '(1 2 3) '(4 5 6))
+5
+> (ormap positive? '(1 2 -4 3))
+#t
+(for-each proc lst ...+) ugyanaz mint map csak void tipusu
+> (for-each (λ (n) (printf "para: ~a\n" n) ) '(1 2 3))
+para: 1
+para: 2
+para: 3
+
+(foldl proc init lst ...+)
+> (foldl cons '() '(1 2 3 4))
+'(4 3 2 1)
+> (foldl (λ (a b r) (+ r (- a b))) 1 '(1 2 3 ) '(4 5 6 ))
+-8
+> (foldl (λ (a b r) (* r (- a b))) 1 '(1 2 3 ) '(4 5 6 ))
+-27
+
+(foldr -||-)
+> (foldr cons '() '(1 2 3 4))
+'(1 2 3 4)
+> (foldr (λ (v l) (cons (+ v 1) l) ) '() '(1 2 3 4))
+'(2 3 4 5)
+(filter predicate lst)
+> (filter positive? '(1 -2 3 5 -5 6))
+'(1 3 5 6)
+(remove value lst [proc])
+> (remove 2 '(1 2 3 4 2 5))
+'(1 3 4 2 5)
+> (remove 2 '(1 2 3 4 2 5) =)
+'(1 3 4 2 5)
+> (remove 2 '(1 2 3 4 2 5) >)
+'(2 3 4 2 5)
+> (remove 2 '(1 2 3 4 2 5) <)
+'(1 2 4 2 5)
+> (remove '(2) (list '(1) '(2) '(3)))
+'((1) (3))
+(remove* v-list lst [proc])
+> (remove*  '(2 2) '(1 2 3 4 2 5))
+'(1 3 4 5)
+> (remove*  '(2 2 1) '(1 2 3 4 2 5))
+'(3 4 5)
+> (remove*  '(2 1) '(1 2 3 4 2 5))
+'(3 4 5)
+-- (myremove val lst)
+-- (myremove* val lst)
