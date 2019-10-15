@@ -459,3 +459,139 @@ para: 3
 '(3 4 5)
 -- (myremove val lst)
 -- (myremove* val lst)
+
+(sort lst less-than?)
+> (sort '(1 6 2 5 3 4) <)
+'(1 2 3 4 5 6)
+> (sort '(1 2 3 4) >)
+'(4 3 2 1)
+>  (sort '("barack" "hus" "medve" "repulo" "asd") string<?)
+'("asd" "barack" "hus" "medve" "repulo")
+>  (sort '("barack" "hus" "medve" "repulo" "asd") string>?)
+'("repulo" "medve" "hus" "barack" "asd")
+
+(sort lst less-than? #:key extract-key #:cache-keys? cache-key?)
+> (sort '(("barack") ("hus") ("medve") ("repulo") ("asd")) #:key car string>?)
+'(("repulo") ("medve") ("hus") ("barack") ("asd"))
+(lambda (x y) (less-than? (extract-key x) (extract-key y) ) )
+Kereses listaban: (member v list) equal? predikatumot haszn.
+(member v list is-equal?)
+> (member 2 (list 1 3 5 4 2))
+'(2)
+> (member 2 (list 1 3 5 4))
+#f
+> (member #'x (list #'x #'y))
+#f
+(memv v lst) az eqv? predikatummal has. ossze az elemeket
+(memq v lst) az eq? predikatummal has. ossze az elemeket
+> (member #'x (list #'x #'y) free-identifier=?)
+'(.#<syntax:interactions from an unsaved editor:32:22 x> .#<syntax:interactions from an unsaved editor:32:26 y>)
+
+(memf proc lst) ahol eloszor igaz a proc, onnantol adja vissza az elemeket
+> (memf (λ (arg) (> arg 9) ) '(1 6 42 12 3))
+'(42 12 3)
+(findf -||-)
+(assoc v lst) ahol v eloszor elofordult
+(assoc v lst is-equal?)
+> (assoc 3 (list (list 1 2) (list 3 4) (list 5 6) ))
+'(3 4)
+> (assoc 9 (list (list 1 2) (list 3 4) (list 5 6) ))
+#f
+> (assoc 9 (list (list 1 2) (list 3 4) (list 5 6) ) (λ (x y) (< (abs (- x y))) ) )
+'(1 2)
+(assv v lst) eqv? -t hasnal osszehas.-ra
+(assq v lst) ez meg eq? -t
+> (assv 3 (list (list 1 2) (list 3 4) (list 5 6) ))
+'(3 4)
+
+(assf proc lst)
+> (assf (λ (x) (> x 2) ) (list (list 1 2) (list 4 5) (list 3 6)) )
+'(4 5)
+
+-------------------------------------------------------------------------------
+# Hozzafero fuggvenyek roviditesei
+
+> (car (car '( (1 2) 3 4)))
+1
+> (caar '((1 2) 3 4))
+1
+(car (cdr '((1 2) 3 4)))
+3
+(cadr '((1 2) 3 4))
+3
+(cdr (car '((1 2) 3 4)))
+(cdar )
+(cdr (cdr '((1 2) 3 4)))
+(cddr )
+(caaaar '( (((2 1 3) 5 5) 6) 7))
+2
+(cadadr '( (((2 1 3) 5 5) 6) (7 5)))
+5
+(require racket/list)
+empty
+> (cons? '(1 2))
+#t
+> (pair? '(1 2))
+#t
+> (empty? '(1 2))
+#f
+> (empty? '())
+#t
+> (first '(1 2 3 4)) // car szinonimaja
+1
+> (rest '(4 5 3 2 5)) // cdr szinonimaja
+'(5 3 2 5)
+(second '(4 5 3 2 5))
+(tenth )
+(last )
+(define (myLast lst)
+  (first (reverse lst))
+  )
+
+(sub1 x)
+> (last-pair '(1 2 3 4))
+'(4)
+(make-list k v) k*v elem
+> (make-list 5 6)
+'(6 6 6 6 6)
+> (make-list 5 'asd)
+'(asd asd asd asd asd)
+(list-update lst pos updater)
+= (updater (list-ref lst pos))
+> (list-update '(zero one two) 1 symbol->string)
+'(zero "one" two)
+(list-set lst pos value)
+> (list-set '(zero one two) 1 "symbol->string")
+'(zero "symbol->string" two)
+(index-of lst v)
+(index-of lst v is-equal?)
+> (index-of '(1 2 3 4) 3)
+2
+> (index-of '(1 2 3 4) 3 <)
+0
+(index-where lst proc)
+> (index-where '(1 2 3 4) even?)
+1
+(indexes-of lst v)
+> (indexes-of '(4 5 3 2 5) 5)
+'(1 4)
+(indexes-where lst proc)
+> (indexes-where '(1 2 3 4) even?)
+'(1 3)
+(take lst pos)
+> (take '(1 2 3) 1)
+'(1)
+> (take '(5 3 7 6 5 8) 4)
+'(5 3 7 6)
+> (take 'non-list 1)
+. . take: contract violation
+  expected: a (possibly improper) list with at least 1 pairs
+  given: 'non-list
+(drop lst pos)
+> (drop '(5 3 7 6 5 8) 4)
+'(5 8)
+(split-at lst proc)
+> (split-at '(5 3 7 6 5 8) 4)
+'(5 3 7 6)
+'(5 8)
+(values (take) (drop))
