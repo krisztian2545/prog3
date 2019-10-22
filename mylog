@@ -595,3 +595,61 @@ empty
 '(5 3 7 6)
 '(5 8)
 (values (take) (drop))
+
+(takef lst pred) 
+> (takef '(2 4 6 7 8) even?)
+'(2 4 6)
+> (takef '(2 4 . 6) even?)
+'(2 4)
+
+(dropf lst pred) 
+
+> (dropf '(2 4 6 7 8) even?)
+'(7 8)
+> (dropf '(2 4 . 6) even?)
+6
+
+(splitf-at lst pred) = (values (takef lst pred) (dropf lst pred))
+> (splitf-at '(5 3 7 6 5 8) odd?)
+'(5 3 7)
+'(6 5 8)
+
+(take-right lst pos)
+> (take-right '(5 3 7 6 5 8) 4)
+'(7 6 5 8)
+
+(drop-right lst pos)
+> (drop-right '(5 3 7 6 5 8) 4)
+'(5 3)
+
+(split-at-right lts pos)
+> (split-at-right '(5 3 7 6 5 8) 4)
+'(5 3)
+'(7 6 5 8)
+
+(takef-right lst pred)
+> (takef-right '(5 3 7 6 5 8) odd?)
+'()
+> (takef-right '(5 4 3 7 6 5 6 8) even?)
+'(6 8)
+
+(dropf-right lst pred)
+> (dropf-right '(5 4 3 7 6 5 6 8) even?)
+'(5 4 3 7 6 5)
+> (dropf-right '(5 4 3 7 6 5 6 8) odd?)
+'(5 4 3 7 6 5 6 8)
+
+> (string->list "abcde")
+'(#\a #\b #\c #\d #\e)
+> (list->string '(#\a #\b #\c #\d #\f))
+"abcdf"
+
+(define ht (make-hash))
+> ht
+'#hash()
+(hash-set! ht "alma" '(red round))
+> (hash-set! ht "banan" '(yellow long))
+> (hash-ref ht "alma")
+'(red round)
+> (hash-ref ht "almaa" "not there")
+"not there"
