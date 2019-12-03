@@ -653,3 +653,113 @@ empty
 '(red round)
 > (hash-ref ht "almaa" "not there")
 "not there"
+
+leghosszabb kozos reszsorozat (Longest common Subsequence)
+szerkesztesi tavolsag (Edit Distance), Levenstein-tavolsag
+
+(define (edit-distance a b)
+  (let ( (a-lst (string->list a)) (b-lst (string->list b)))
+    (define (edit-distance/list a-lst b-lst)
+      (cond
+        [(and (empty? a-lst) (empty? b-lst)) 0]
+        [(null? a-lst) (length b-lst)]
+        [(null? b-lst) (length a-lst)]
+        [(eq? (car a-lst) (car b-lst)) (edit-distance/list (cdr a-lst) (cdr b-lst))]
+        [else (+ 1 (min (edit-distance/list a-lst (cdr b-lst))
+                   (edit-distance/list (cdr a-lst) b-lst)
+                   (edit-distance/list (cdr a-lst) (cdr b-lst))
+                   ))]
+        )
+      )
+    (edit-distance/list a-lst b-lst)
+    )
+  )
+  
+> (edit-distance "Cat" "Bat")
+1
+> (edit-distance "Fly" "Flying")
+3
+> (edit-distance "Kitten" "Sitting")
+3
+nem megy:
+(define (edit-distance a b)
+  (let ((a-lst (string->list a)) (b-lst (string->list b)) (ht (make-hash)))
+    (define (edit-distance/list a-lst b-lst)
+      (let ((value (hash-ref ht (list a-lst b-lst) #f)))
+        (if (value)
+            value
+            (set! value (cond
+                          [(and (empty? a-lst) (empty? b-lst)) 0]
+                          [(null? a-lst) (length b-lst)]
+                          [(null? b-lst) (length a-lst)]
+                          [(eq? (car a-lst) (car b-lst)) (edit-distance/list (cdr a-lst) (cdr b-lst))]
+                          [else (+ 1 (min (edit-distance/list a-lst (cdr b-lst))
+                                          (edit-distance/list (cdr a-lst) b-lst)
+                                          (edit-distance/list (cdr a-lst) (cdr b-lst))
+                                          ))]
+                          )
+                  )
+            (hash-set! ht (list a-lst b-lst) value)
+            value
+            )
+        )
+      )
+    )
+  (edit-distance/list a-lst b-lst)
+  )
+Zipper
+
+filter
+
+currying
+f: X x(vagy *) Y -> Z (descartes szorzat)
+
+vezessunk be egy uj h fuggvenyt a kov. keppen:
+h: X -> (Y -> Z)
+
+hasznalat: h(x) (y) = f(x,y)
+=> curry(f) = h
+
+(define (divisors-of n)
+  (filter
+   (λ (e)
+     ( (curry = 0) ((curry modulo n) e) )
+     )
+   (range 1 n)
+   )
+  )
+  
+(define (divisors-of n)
+  (filter
+   (compose (curry = 0) (curry modulo n))
+   (range 1 n)
+   )
+  )
+
+(+ 10 3)
+(curry +)
+((curry +) 10)
+(((curry +) 10) 3)
+
+1) predikatum(azaz true vagy false), amely egy listarol eldonti h palindroma e.
+tilos a beepitett reverse
+
+2) pascal haromszog n-edik soranak elemeit adja meg egy listaban
+
+3) def fugv-t amely a paramkent megadott, egeszeket tart. lista elemeit egy permutaciokent tekinti es eloallitja a listaelemek lexikografikusan rakovetkezo permutaciojat
+pl: (1 2 3 4) -> (1 2 4 3)
+(1 2 4 3) -> (1 3 2 4)
+
+4) def fgv amely 10000-nel kisebb olyan szamokat adja vissza egy listaban, amelyeknek a forditotjukkal vett osszege palindroma szamokat
+47 + 74 = 121 -> 47 is meg 74 is ilyen
+
+(define (pal? lst)
+  (if (empty? lst)
+      #t
+      (if (= (first lst) (last lst))
+          (pal? (drop (take lst (sub1 (length lst))) 1) )
+          #f
+      )
+   )
+  
+  )
